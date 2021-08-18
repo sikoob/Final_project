@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import Particles from 'react-particles-js';
 import Navigation from './components/navigation/Navigation.js';
 import Logo from './components/logo/Logo.js';
 import ImageLinkForm from './components/imagelinkform/ImageLinkForm.js';
@@ -12,6 +13,18 @@ import Register from './components/register/Register.js';
 const app = new Clarifai.App({
  apiKey: '08a93ffa3c1d49fb9f137cc4123f6504'
 });
+
+const particlesOptions = {
+  particles: {
+    number: {
+      value: 30,
+      density: {
+        enable: true,
+        value_area: 800
+      }
+    }
+  }
+}
 
 class App extends Component {
   constructor() {
@@ -69,6 +82,9 @@ class App extends Component {
     const { isSignedIn, imageUrl, route, box } = this.state;
     return (
       <div className="App">
+        <Particles className='particles'
+          params={particlesOptions}
+        />
         <Navigation isSignedIn={isSignedIn} onRouteChange={this.onRouteChange}/>
         { route=== 'home'
           ? <div>

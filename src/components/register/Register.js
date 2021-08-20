@@ -23,7 +23,7 @@ class Register extends React.Component {
 	}
 
 	onSubmitSignIn = () => {
-		fetch('http://localhost:3000/register', {
+		fetch('https://safe-bayou-17743.herokuapp.com/register', {
 			method: 'post',
 			headers: {'Content-Type': 'application/json'},
 			body: JSON.stringify({
@@ -32,7 +32,7 @@ class Register extends React.Component {
 				name: this.state.name
 			})
 		})
-		.then(response => reponse.json())
+		.then(response => response.json())
  		.then(user => {
 	        if(user.id){ // does the user exist? Did we receive a user with a property of id?
 	          this.props.loadUser(user);

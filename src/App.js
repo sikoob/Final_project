@@ -39,9 +39,9 @@ const initialState = {
 class App extends Component {
   constructor() {
     super();
-    this.initialState;
+    this.state =initialState;
   }
-}
+
 
   loadUser=(data) => {
     this.setState({user: {
@@ -53,13 +53,30 @@ class App extends Component {
     }})
   }
 
+  calculateFaceLocation = (data) => {
+    const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
+    const image = document.getElementById('inputimage');
+    const width = Number(image.width);
+    const height = Number(image.height);
+    return {
+      leftCol: clarifaiFace.left_col*width,
+      topRow: clarifaiFace.top_row*height,
+      rightCol: width - (clarifaiFace.right_col*width),
+      bottomRow: height - (clarifaiFace.bottom_row*height)
+    }
+  }
+
+  displayFaceBox = (box) => {
+    this.setState({box: box});
+  }
+
   onInputChange = (event) => {
     this.setState({input:event.target.value});                        /*xy.target.value gibt direkt die Eingabewerte wieder*/
   }
 
   onButtonSubmit = () => {
     this.setState({imageUrl: this.state.input});
-      fetch('http://localhost:3000/image', {
+      fetch('https://safe-bayou-17743.herokuapp.com/imageurl', {
         method: 'post',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
@@ -69,7 +86,7 @@ class App extends Component {
       .then(response => response.json())
       .then(response => {
         if(response) {
-          fetch('http://localhost:3000/image', {
+          fetch('https://safe-bayou-17743.herokuapp.com/image', {
             method: 'put',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
@@ -88,31 +105,12 @@ class App extends Component {
   }
 
   onRouteChange = (route) => {
-    if(route==='signout'){
+    if(route === 'signout'){
       this.setState(initialState)
-    } else if (route==='home') {
+    } else if (route === 'home') {
       this.setState({isSignedIn: true})
     }
     this.setState({route: route});
-  }
-
-    calculateFaceLocation = (data) => {
-    const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
-    const image = document.getElementById('inputimage');
-    const width = Number(image.width);
-    const height = Number(image.height);
-    return {
-      leftCol: clarifaiFace.left_col*width,
-      topRow: clarifaiFace.top_row*height,
-      rightCol: width - (clarifaiFace.right_col*width),
-      bottomRow: height - (clarifaiFace.bottom_row*height)
-    }
-  }
-
-
-
-  displayFaceBox = (box) => {
-    this.setState({box: box});
   }
 
   render() {
@@ -122,11 +120,14 @@ class App extends Component {
         <Particles className='particles'
           params={particlesOptions}
         />
-        <Navigation isSignedIn={isSignedIn} onRouteChange={this.onRouteChange}/>
+        <Navigation isSignedIn={isSignedIn} onRouteChange={this.onRouteChange} />
         { route=== 'home'
           ? <div>
               <Logo />
-              <Rank name={this.state.user.name} entries={this.state.user.entries} />
+              <Rank 
+                name={this.state.user.name} 
+                entries={this.state.user.entries} 
+              />
               <ImageLinkForm 
                 onInputChange={this.onInputChange} 
                 onButtonSubmit={this.onButtonSubmit}                       // this. benötigt, um den Aspekt innerhalb des Codes aufrufen zu können
@@ -134,7 +135,7 @@ class App extends Component {
               <FaceRecognition box={box} imageUrl={imageUrl} />
             </div>
           : (
-            this.state.route==='signin'
+            route==='signin'
             ? <SignIn loadUser={this.loadUser} onRouteChange={this.onRouteChange}/>
             : <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange}/>
           )

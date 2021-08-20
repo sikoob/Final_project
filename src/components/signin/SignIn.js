@@ -18,7 +18,7 @@ class SignIn extends React.Component {
 	}
 
 	onSubmitSignIn = () => {
-		fetch('http://localhost:3000/signin', {
+		fetch('https://safe-bayou-17743.herokuapp.com/signin', {
 			method: 'post',
 			headers: {'Content-Type': 'application/json'},
 			body: JSON.stringify({
@@ -26,7 +26,7 @@ class SignIn extends React.Component {
 				password: this.state.signInPassword
 			})
 		})
-			.then(response => reponse.json())
+			.then(response => response.json())
 			.then(user => {
 		        if(user.id){ // does the user exist? Did we receive a user with a property of id?
 		          this.props.loadUser(user);

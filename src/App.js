@@ -81,6 +81,7 @@ class App extends Component {
             .then(count => {
               this.setState(Object.assign(this.state.user, { entries: count}))  /*ändert nur die angegebene User-Angabe, nicht das gesamte User Objekt*/
             })
+            .catch(console.log)
         }
         this.displayFaceBox(this.calculateFaceLocation(response)) /*Weg zur Bounding Box für Gesichtserkennung in API-output*/
         })        

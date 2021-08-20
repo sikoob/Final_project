@@ -33,11 +33,11 @@ class Register extends React.Component {
 			})
 		})
 		.then(response => reponse.json())
-		.then(user => {
-			if (user) {
-				this.props.loadUser(user);
-				this.props.onRouteChange('home');
-			}
+ 		.then(user => {
+	        if(user.id){ // does the user exist? Did we receive a user with a property of id?
+	          this.props.loadUser(user);
+	          this.props.onRouteChange('home');
+	        }
 		})
 	}
 
